@@ -3,3 +3,6 @@
 
 #include "UI/MEGCellWidget.h"
 
+void UMEGCellWidget::UpdateCell(EMEGDistrict InDistrictType)
+{
+}

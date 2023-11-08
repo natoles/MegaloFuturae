@@ -6,8 +6,6 @@
 #include "Blueprint/UserWidget.h"
 #include "MEGCardHandWidget.generated.h"
 
-class UMEGCardWidget;
-
 /**
  * 
  */
@@ -25,17 +23,13 @@ protected :
 
 	void UpdateHand();
 
-
-	void FillCardWidgets();
-	TArray<UMEGCardWidget*> CardWidgets;
+	UPROPERTY(meta = (BindWidget))
+	class UMEGCardWidget* FirstCard;
 
 	UPROPERTY(meta = (BindWidget))
-	UMEGCardWidget* FirstCard;
+	class UMEGCardWidget* SecondCard;
 
 	UPROPERTY(meta = (BindWidget))
-	UMEGCardWidget* SecondCard;
-
-	UPROPERTY(meta = (BindWidget))
-	UMEGCardWidget* ThirdCard;
+	class UMEGCardWidget* ThirdCard;
 	
 };

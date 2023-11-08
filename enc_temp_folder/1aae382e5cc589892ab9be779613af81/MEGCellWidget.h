@@ -17,8 +17,6 @@ class MEGALOFUTURAE_API UMEGCellWidget : public UUserWidget
 
 public :
 
-	void UpdateCell(EMEGDistrict InDistrictType);
-
 	EMEGDistrict DistrictType;
 
 protected :
