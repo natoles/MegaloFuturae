@@ -26,7 +26,7 @@ protected :
 
 	void FillCellWidgets();
 
-	TMap<enum EMEGCellPosition, UMEGCellWidget*> CellWidgets;
+	TMap<enum class EMEGCellPosition, UMEGCellWidget*> CellWidgets;
 	
 	UPROPERTY(meta = (BindWidget))
 	UMEGCellWidget* CellUL;
