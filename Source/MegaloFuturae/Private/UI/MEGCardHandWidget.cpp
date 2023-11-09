@@ -41,6 +41,7 @@ void UMEGCardHandWidget::UpdateHand()
 			continue;
 		}
 
+		CardWidgets[Index]->SetVisibility(ESlateVisibility::Visible);
 		CardWidgets[Index]->UpdateCard(GameMode->DrawnCardsId[Index]);
 	}
 

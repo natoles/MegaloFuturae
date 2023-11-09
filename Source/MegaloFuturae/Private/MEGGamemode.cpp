@@ -3,6 +3,7 @@
 
 #include "MEGGamemode.h"
 #include "Blueprint/UserWidget.h"
+#include "Data/MEGDistrictDataRow.h"
 
 #define MAX_CARDS_IN_HANDS 3
 
@@ -29,6 +30,35 @@ void AMEGGamemode::DrawCard()
 		DrawnCardsId.Add(DrawnCardId);
 
 	OnCardHandUpdatedDelegate.ExecuteIfBound();
+}
+
+const FMEGCardData* AMEGGamemode::GetCardDataFromId(int32 InCardId) const
+{
+	const FMEGCardData* CardData = Cards.FindByPredicate([InCardId](const FMEGCardData& InCardData)
+		{
+			return InCardData.CardId == InCardId;
+		}) ;
+
+	return CardData;
+}
+
+const FMEGDistrictDataRow* AMEGGamemode::GetDistrictData(EMEGDistrict DistrictType) const
+{
+	if(!ensure(DistrictDataTable != nullptr))
+		return nullptr;
+
+	TArray<FName> RowNames = DistrictDataTable->GetRowNames();
+	for (const FName& RowName : RowNames)
+	{
+		FMEGDistrictDataRow* DistrictDataRow = DistrictDataTable->FindRow<FMEGDistrictDataRow>(RowName, "");
+
+		if (DistrictDataRow && DistrictDataRow->DistrictType == DistrictType)
+		{
+			return DistrictDataRow;
+		}
+	}
+
+	return nullptr;
 }
 
 int32 AMEGGamemode::GetAvailableCardId() const

@@ -2,16 +2,37 @@
 
 
 #include "UI/MEGCardWidget.h"
-
+#include "UI/MEGCellWidget.h"
 #include "Data/MEGCardData.h"
+#include "MEGGamemode.h"
+#include "Kismet/GameplayStatics.h"
 
 void UMEGCardWidget::NativeConstruct()
 {
 	FillCellWidgets();
 }
 
-void UMEGCardWidget::UpdateCard(int32 CardId)
+void UMEGCardWidget::UpdateCard(int32 InCardId)
 {
+	AMEGGamemode* GameMode = Cast<AMEGGamemode>(UGameplayStatics::GetGameMode(this));
+	if (!ensure(GameMode != nullptr))
+		return;
+
+	const FMEGCardData* CardData = GameMode->GetCardDataFromId(InCardId);
+	if(!ensure(CardData != nullptr))
+		return;
+
+	CardId = InCardId;
+	
+	for (TPair<EMEGCellPosition, UMEGCellWidget*>& KvpCell : CellWidgets)
+	{
+		if(!ensure(KvpCell.Value != nullptr))
+			return;
+
+		const EMEGDistrict CellDistrict = CardData->Cells[KvpCell.Key].DistrictType;
+
+		KvpCell.Value->UpdateCell(CellDistrict);
+	}
 }
 
 void UMEGCardWidget::FillCellWidgets()

@@ -24,10 +24,12 @@ public :
 
 protected :
 
+	int32 CardId;
+
 	void FillCellWidgets();
 
 	TMap<enum class EMEGCellPosition, UMEGCellWidget*> CellWidgets;
-	
+
 	UPROPERTY(meta = (BindWidget))
 	UMEGCellWidget* CellUL;
 

@@ -19,6 +19,9 @@ public :
 
 	virtual void BeginPlay() override;
 
+	const FMEGCardData* GetCardDataFromId(int32 InCardId) const;
+
+	const struct FMEGDistrictDataRow* GetDistrictData(EMEGDistrict DistrictType) const;
 
 	/******  Card containers  ******/
 
@@ -38,6 +41,9 @@ public :
 protected :
 
 	void DrawCard();
+
+	UPROPERTY(EditDefaultsOnly)
+	class UDataTable* DistrictDataTable;
 
 	/* Returns a card id from a card which is available. Returns INDEX_NONE if no card left */
 	int32 GetAvailableCardId() const;
