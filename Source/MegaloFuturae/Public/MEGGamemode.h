@@ -50,4 +50,6 @@ protected :
 
 	/* Returns a card id from a card which is available. Returns INDEX_NONE if no card left */
 	int32 GetAvailableCardId() const;
+
+	class AMEGGridManager* GridManager;
 };

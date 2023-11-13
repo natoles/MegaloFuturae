@@ -4,6 +4,7 @@
 #include "MEGGamemode.h"
 #include "Blueprint/UserWidget.h"
 #include "Data/MEGDistrictDataRow.h"
+#include "Grid/MEGGridManager.h"
 
 #define MAX_CARDS_IN_HANDS 3
 
@@ -21,6 +22,14 @@ void AMEGGamemode::BeginPlay()
 	{
 		DrawCard();
 	}
+
+	GridManager = GetWorld()->SpawnActor<AMEGGridManager>(AMEGGridManager::StaticClass());
+	if (!ensure(GridManager != nullptr))
+		return;
+
+	const int32 FirstPlacedCardId = GetAvailableCardId();
+	GridManager->PlaceCard(FirstPlacedCardId, FVector2D(0,0));
+	PlayedCardsId.Add(FirstPlacedCardId);
 }
 
 void AMEGGamemode::DrawCard()
