@@ -6,6 +6,9 @@
 #include "GameFramework/Actor.h"
 #include "MEGGridManager.generated.h"
 
+class AMEGGridCell;
+enum class EMEGCellPosition;
+
 UCLASS()
 class MEGALOFUTURAE_API AMEGGridManager : public AActor
 {
@@ -17,12 +20,15 @@ public:
 
 	void PlaceCard(int32 InCardId, FVector2D InCoords);
 
+
 protected:
-	// Called when the game starts or when spawned
-	virtual void BeginPlay() override;
 
-	FVector2D GetCellPositionOffset(enum class EMEGCellPosition InCellPosition) const;
+	FVector2D GetCellPositionOffset(EMEGCellPosition InCellPosition) const;
+	AMEGGridCell* GetCellFromCoords(FVector2D InCoords) const;
 
-	TArray<class AMEGGridCell*> GridCells;
+	TArray<AMEGGridCell*> GridCells;
+
+	UPROPERTY(EditDefaultsOnly)
+	TSubclassOf<class AMEGGridCell> GridCellClass;
 
 };

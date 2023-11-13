@@ -23,7 +23,7 @@ void AMEGGamemode::BeginPlay()
 		DrawCard();
 	}
 
-	GridManager = GetWorld()->SpawnActor<AMEGGridManager>(AMEGGridManager::StaticClass());
+	GridManager = GetWorld()->SpawnActor<AMEGGridManager>(GridManagerClass);
 	if (!ensure(GridManager != nullptr))
 		return;
 

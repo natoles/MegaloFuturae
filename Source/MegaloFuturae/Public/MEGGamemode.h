@@ -52,4 +52,7 @@ protected :
 	int32 GetAvailableCardId() const;
 
 	class AMEGGridManager* GridManager;
+
+	UPROPERTY(EditDefaultsOnly)
+	TSubclassOf<class AMEGGridManager> GridManagerClass;
 };

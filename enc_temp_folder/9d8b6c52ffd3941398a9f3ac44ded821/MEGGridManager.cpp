@@ -11,7 +11,7 @@
 
 #define CELL_LENGTH 70
 #define CELL_HEIGHT 50
-#define DEFAULT_CELL_Z 1
+#define DEFAULT_CELL_Z 5
 
 // Sets default values
 AMEGGridManager::AMEGGridManager()
@@ -49,6 +49,7 @@ void AMEGGridManager::PlaceCard(int32 InCardId, FVector2D InCoords)
 			NewGridCell->Coords = OffsetCoords;
 		}
 
+		// Update it !
 	}
 }
 
