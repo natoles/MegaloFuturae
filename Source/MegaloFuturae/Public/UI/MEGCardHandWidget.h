@@ -25,6 +25,14 @@ protected :
 
 	void UpdateHand();
 
+	void DeselectAllCards();
+
+	UMEGCardWidget* GetCardWidgetFomId(int32 CardId);
+
+	UFUNCTION()
+	void OnCardSelected(int32 InCardId);
+
+	int32 SelectedCardId = INDEX_NONE;
 
 	void FillCardWidgets();
 	TArray<UMEGCardWidget*> CardWidgets;

@@ -6,10 +6,22 @@
 #include "Data/MEGCardData.h"
 #include "MEGGamemode.h"
 #include "Kismet/GameplayStatics.h"
+#include "Components/Button.h"
+#include "Components/Image.h"
 
 void UMEGCardWidget::NativeConstruct()
 {
+	Super::NativeConstruct();
 	FillCellWidgets();
+
+	SelectionButton->OnClicked.AddDynamic(this, &UMEGCardWidget::OnButtonClicked);
+}
+
+void UMEGCardWidget::NativeDestruct()
+{
+	Super::NativeDestruct();
+
+	SelectionButton->OnClicked.RemoveAll(this);
 }
 
 void UMEGCardWidget::UpdateCard(int32 InCardId)
@@ -41,4 +53,25 @@ void UMEGCardWidget::FillCellWidgets()
 	CellWidgets.Add({EMEGCellPosition::UR, CellUR});
 	CellWidgets.Add({EMEGCellPosition::DR, CellDR});
 	CellWidgets.Add({EMEGCellPosition::DL, CellDL});
+}
+
+void UMEGCardWidget::OnButtonClicked()
+{
+	AMEGGamemode* GameMode = Cast<AMEGGamemode>(UGameplayStatics::GetGameMode(this));
+	if (!ensure(GameMode != nullptr))
+		return;
+
+	GameMode->OnCardSelectedDelegate.Broadcast(CardId);
+}
+
+void UMEGCardWidget::SetSelected(bool bSelected)
+{
+	if (bSelected)
+	{
+		SelectedImage->SetVisibility(ESlateVisibility::HitTestInvisible);
+	}
+	else
+	{
+		SelectedImage->SetVisibility(ESlateVisibility::Collapsed);
+	}
 }

@@ -15,6 +15,7 @@ void UMEGCardHandWidget::NativeConstruct()
 		return;
 
 	GameMode->OnCardHandUpdatedDelegate.BindUObject(this, &UMEGCardHandWidget::UpdateHand);
+	GameMode->OnCardSelectedDelegate.AddUObject(this, &UMEGCardHandWidget::OnCardSelected);
 }
 
 void UMEGCardHandWidget::NativeDestruct()
@@ -24,6 +25,7 @@ void UMEGCardHandWidget::NativeDestruct()
 		return;
 
 	GameMode->OnCardHandUpdatedDelegate.Unbind();
+	GameMode->OnCardSelectedDelegate.RemoveAll(this);
 }
 
 void UMEGCardHandWidget::UpdateHand()
@@ -35,6 +37,9 @@ void UMEGCardHandWidget::UpdateHand()
 	const int32 NumCardsInHand = GameMode->DrawnCardsId.Num();
 	for (int32 Index = 0; Index < CardWidgets.Num(); Index++)
 	{
+		if(!ensure(CardWidgets[Index] != nullptr))
+			continue;
+
 		if (Index >= NumCardsInHand)
 		{
 			CardWidgets[Index]->SetVisibility(ESlateVisibility::Collapsed);
@@ -45,6 +50,44 @@ void UMEGCardHandWidget::UpdateHand()
 		CardWidgets[Index]->UpdateCard(GameMode->DrawnCardsId[Index]);
 	}
 
+}
+
+void UMEGCardHandWidget::DeselectAllCards()
+{
+	for (UMEGCardWidget* CardWidget : CardWidgets)
+	{
+		CardWidget->SetSelected(false);
+	}
+
+	SelectedCardId = INDEX_NONE;
+}
+
+UMEGCardWidget* UMEGCardHandWidget::GetCardWidgetFomId(int32 CardId)
+{
+	for (UMEGCardWidget* CardWidget : CardWidgets)
+	{
+		if(CardWidget->CardId == CardId)
+			return CardWidget;
+	}
+
+	return nullptr;
+}
+
+void UMEGCardHandWidget::OnCardSelected(int32 InCardId)
+{
+	// If we select a card already selected, deselect it
+	const bool bSelectCard = (SelectedCardId != InCardId);
+
+	DeselectAllCards();
+	if (bSelectCard)
+	{
+		SelectedCardId = InCardId;
+		UMEGCardWidget* SelectedCard = GetCardWidgetFomId(SelectedCardId);
+		if(!ensure(SelectedCard != nullptr))
+			return;
+
+		SelectedCard->SetSelected(true);
+	}
 }
 
 void UMEGCardHandWidget::FillCardWidgets()

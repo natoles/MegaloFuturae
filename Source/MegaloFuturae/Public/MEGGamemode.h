@@ -38,6 +38,9 @@ public :
 	DECLARE_DELEGATE(FOnCardHandUpdated)
 	FOnCardHandUpdated OnCardHandUpdatedDelegate;
 
+	DECLARE_MULTICAST_DELEGATE_OneParam(FOnCardSelected, int32 CardId)
+	FOnCardSelected OnCardSelectedDelegate;
+
 protected :
 
 	void DrawCard();

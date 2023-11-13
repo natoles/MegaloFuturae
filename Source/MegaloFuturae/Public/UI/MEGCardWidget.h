@@ -21,12 +21,18 @@ public :
 	void UpdateCard(int32 CardId);
 
 	virtual void NativeConstruct() override;
+	virtual void NativeDestruct() override;
 
-protected :
+	void SetSelected(bool bSelected);
 
 	int32 CardId;
 
+protected :
+
 	void FillCellWidgets();
+
+	UFUNCTION()
+	void OnButtonClicked();
 
 	TMap<enum class EMEGCellPosition, UMEGCellWidget*> CellWidgets;
 
@@ -41,4 +47,10 @@ protected :
 
 	UPROPERTY(meta = (BindWidget))
 	UMEGCellWidget* CellDL;
+
+	UPROPERTY(meta = (BindWidget))
+	class UButton* SelectionButton;
+
+	UPROPERTY(meta = (BindWidget))
+	class UImage* SelectedImage;
 };
