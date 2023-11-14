@@ -32,6 +32,9 @@ protected :
 	UFUNCTION()
 	void OnCardSelected(int32 InCardId);
 
+	UFUNCTION()
+	void OnRequestPlaceCard(FVector2D InCoords);
+
 	int32 SelectedCardId = INDEX_NONE;
 
 	void FillCardWidgets();

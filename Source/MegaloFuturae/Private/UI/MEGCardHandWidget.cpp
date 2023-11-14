@@ -16,6 +16,7 @@ void UMEGCardHandWidget::NativeConstruct()
 
 	GameMode->OnCardHandUpdatedDelegate.BindUObject(this, &UMEGCardHandWidget::UpdateHand);
 	GameMode->OnCardSelectedDelegate.AddUObject(this, &UMEGCardHandWidget::OnCardSelected);
+	GameMode->OnRequestPlaceCard.AddUObject(this, &UMEGCardHandWidget::OnRequestPlaceCard);
 }
 
 void UMEGCardHandWidget::NativeDestruct()
@@ -26,6 +27,7 @@ void UMEGCardHandWidget::NativeDestruct()
 
 	GameMode->OnCardHandUpdatedDelegate.Unbind();
 	GameMode->OnCardSelectedDelegate.RemoveAll(this);
+	GameMode->OnRequestPlaceCard.RemoveAll(this);
 }
 
 void UMEGCardHandWidget::UpdateHand()
@@ -88,6 +90,20 @@ void UMEGCardHandWidget::OnCardSelected(int32 InCardId)
 
 		SelectedCard->SetSelected(true);
 	}
+}
+
+void UMEGCardHandWidget::OnRequestPlaceCard(FVector2D InCoords)
+{
+	// Don't do anything if no card is selected
+	if(SelectedCardId == INDEX_NONE)
+		return;
+
+	AMEGGamemode* GameMode = Cast<AMEGGamemode>(UGameplayStatics::GetGameMode(this));
+	if (!ensure(GameMode != nullptr))
+		return;
+
+	GameMode->PlaceCardFromHand(SelectedCardId, InCoords);
+	DeselectAllCards();
 }
 
 void UMEGCardHandWidget::FillCardWidgets()

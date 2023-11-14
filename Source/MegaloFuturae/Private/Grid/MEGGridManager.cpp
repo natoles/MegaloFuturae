@@ -8,6 +8,7 @@
 #include "Data/MEGCardData.h"
 #include "Grid/MEGGridManager.h"
 #include "Grid/MEGGridCell.h"
+#include "Grid/MEGCardPlacer.h"
 
 #define CELL_LENGTH 70
 #define CELL_HEIGHT 50
@@ -36,20 +37,67 @@ void AMEGGridManager::PlaceCard(int32 InCardId, FVector2D InCoords)
 		AMEGGridCell* CurrentGridCell = GetCellFromCoords(OffsetCoords);
 		if (CurrentGridCell == nullptr)
 		{
-			// Spawn it !
-
-			AMEGGridCell* NewGridCell = GetWorld()->SpawnActor<AMEGGridCell>(GridCellClass);
-			if(!ensure(NewGridCell != nullptr))
+			CurrentGridCell = GetWorld()->SpawnActor<AMEGGridCell>(GridCellClass);
+			if(!ensure(CurrentGridCell != nullptr))
 				continue;
 
-			GridCells.Add(NewGridCell);
+			GridCells.Add(CurrentGridCell);
 
 			const FVector SpawnPosition = FVector(OffsetCoords.X * CELL_LENGTH, OffsetCoords.Y * CELL_HEIGHT, DEFAULT_CELL_Z);
-			NewGridCell->SetActorLocation(SpawnPosition);
-			NewGridCell->Coords = OffsetCoords;
+			CurrentGridCell->SetActorLocation(SpawnPosition);
+			CurrentGridCell->Coords = OffsetCoords;
 		}
 
+		if(!ensure(CurrentGridCell != nullptr))
+			continue;
+
+		CurrentGridCell->UpdateCellDistrict(CellData.Value.DistrictType);
 	}
+
+	UpdateCardPlacers(InCoords);
+}
+
+void AMEGGridManager::UpdateCardPlacers(FVector2D InCoords)
+{
+	for (int32 XOffset = -2; XOffset <= 2; XOffset++)
+	{
+		for (int32 YOffset = -2; YOffset<= 2; YOffset++)
+		{
+			if(abs(XOffset) + abs(YOffset) == 4)
+				continue;
+
+			const int32 CurrentXCoord = InCoords.X + XOffset;
+			const int32 CurrentYCoord = InCoords.Y + YOffset;
+
+			AMEGCardPlacer* CurrentPlacer = GetCardPlacerFromCoords(FVector2D(CurrentXCoord, CurrentYCoord));
+			if (CurrentPlacer == nullptr) // If placer not found, create it
+			{
+				CurrentPlacer = GetWorld()->SpawnActor<AMEGCardPlacer>(CardPlacerClass);
+				if (!ensure(CurrentPlacer != nullptr))
+					continue;
+
+				CurrentPlacer->Coords = FVector2D(CurrentXCoord, CurrentYCoord);
+
+				const FVector CurrentCoords = FVector(CurrentXCoord * CELL_LENGTH, CurrentYCoord * CELL_HEIGHT, DEFAULT_CELL_Z);
+				CurrentPlacer->SetActorLocation(CurrentCoords);
+
+				CardPlacers.Add(CurrentPlacer);
+			}
+		}
+	}
+}
+
+AMEGCardPlacer* AMEGGridManager::GetCardPlacerFromCoords(FVector2D InCoords) const
+{
+	AMEGCardPlacer* const* Placer = CardPlacers.FindByPredicate([InCoords](const AMEGCardPlacer* InPlacer)
+		{
+			return InPlacer->Coords == InCoords;
+		});
+
+	if (Placer == nullptr)
+		return nullptr;
+
+	return *Placer;
 }
 
 AMEGGridCell* AMEGGridManager::GetCellFromCoords(FVector2D InCoords) const

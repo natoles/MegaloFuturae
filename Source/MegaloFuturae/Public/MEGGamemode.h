@@ -23,6 +23,8 @@ public :
 
 	const struct FMEGDistrictDataRow* GetDistrictData(EMEGDistrict DistrictType) const;
 
+	void PlaceCardFromHand(int32 InCardId, FVector2D InCoords);
+
 	/******  Card containers  ******/
 
 	TArray<int32> DrawnCardsId;
@@ -41,6 +43,9 @@ public :
 	DECLARE_MULTICAST_DELEGATE_OneParam(FOnCardSelected, int32 CardId)
 	FOnCardSelected OnCardSelectedDelegate;
 
+	DECLARE_MULTICAST_DELEGATE_OneParam(FOnRequestPlaceCard, FVector2D Coords)
+	FOnRequestPlaceCard OnRequestPlaceCard;
+
 protected :
 
 	void DrawCard();
@@ -50,6 +55,8 @@ protected :
 
 	/* Returns a card id from a card which is available. Returns INDEX_NONE if no card left */
 	int32 GetAvailableCardId() const;
+
+	void RemoveCardFromHand(int32 CardId);
 
 	class AMEGGridManager* GridManager;
 

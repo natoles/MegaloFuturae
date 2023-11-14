@@ -2,6 +2,8 @@
 
 
 #include "Grid/MEGGridCell.h"
+#include "UI/MEGCellWidget.h"
+#include "Data/MEGCellData.h"
 
 #include "Components/WidgetComponent.h"
 
@@ -15,10 +17,11 @@ AMEGGridCell::AMEGGridCell()
 	CellWidget->SetupAttachment(RootComponent);
 }
 
-// Called when the game starts or when spawned
-void AMEGGridCell::BeginPlay()
+void AMEGGridCell::UpdateCellDistrict(EMEGDistrict DistrictType)
 {
-	Super::BeginPlay();
-	
+	if (UMEGCellWidget* CastCellWidget = Cast<UMEGCellWidget>(CellWidget->GetUserWidgetObject()))
+	{
+		CastCellWidget->UpdateCell(DistrictType);
+	}
 }
 

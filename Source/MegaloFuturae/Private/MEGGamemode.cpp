@@ -70,6 +70,25 @@ const FMEGDistrictDataRow* AMEGGamemode::GetDistrictData(EMEGDistrict DistrictTy
 	return nullptr;
 }
 
+void AMEGGamemode::PlaceCardFromHand(int32 InCardId, FVector2D InCoords)
+{
+	if(InCardId == INDEX_NONE)
+		return;
+
+	GridManager->PlaceCard(InCardId, InCoords);
+	PlayedCardsId.Add(InCardId);
+	RemoveCardFromHand(InCardId);
+
+	DrawCard();
+}
+
+void AMEGGamemode::RemoveCardFromHand(int32 CardId)
+{
+	DrawnCardsId.Remove(CardId);
+	OnCardHandUpdatedDelegate.ExecuteIfBound();
+}
+
+
 int32 AMEGGamemode::GetAvailableCardId() const
 {
 	const TArray<FMEGCardData> AvailableCards = Cards.FilterByPredicate([this](const FMEGCardData& InCardData)

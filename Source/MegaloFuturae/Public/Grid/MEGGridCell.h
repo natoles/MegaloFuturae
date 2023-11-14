@@ -6,6 +6,8 @@
 #include "GameFramework/Actor.h"
 #include "MEGGridCell.generated.h"
 
+enum class EMEGDistrict;
+
 UCLASS()
 class MEGALOFUTURAE_API AMEGGridCell : public AActor
 {
@@ -17,10 +19,10 @@ public:
 
 	FVector2D Coords;
 
+	void UpdateCellDistrict(EMEGDistrict DistrictType);
+
 protected:
-	// Called when the game starts or when spawned
-	virtual void BeginPlay() override;
-	
+
 	UPROPERTY(EditAnywhere)
 	class USceneComponent* SceneComponent;
 
