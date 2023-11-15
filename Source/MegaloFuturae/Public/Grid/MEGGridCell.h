@@ -21,6 +21,8 @@ public:
 
 	void UpdateCellDistrict(EMEGDistrict DistrictType);
 
+	EMEGDistrict GetDistrictType() const;
+
 protected:
 
 	UPROPERTY(EditAnywhere)

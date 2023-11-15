@@ -55,6 +55,7 @@ void AMEGGridManager::PlaceCard(int32 InCardId, FVector2D InCoords)
 	}
 
 	UpdateCardPlacers(InCoords);
+	GameMode->UpdateScore();
 }
 
 void AMEGGridManager::UpdateCardPlacers(FVector2D InCoords)

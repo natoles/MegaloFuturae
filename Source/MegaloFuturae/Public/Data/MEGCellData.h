@@ -15,6 +15,8 @@ enum class EMEGDistrict
 	Dwellings
 };
 
+ENUM_RANGE_BY_FIRST_AND_LAST(EMEGDistrict, EMEGDistrict::Parc, EMEGDistrict::Dwellings)
+
 /**
  * 
  */

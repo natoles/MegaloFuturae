@@ -30,7 +30,6 @@ void AMEGGamemode::BeginPlay()
 	const int32 FirstPlacedCardId = GetAvailableCardId();
 	GridManager->PlaceCard(FirstPlacedCardId, FVector2D(0,0));
 	PlayedCardsId.Add(FirstPlacedCardId);
-	UpdateScore();
 }
 
 void AMEGGamemode::DrawCard()
@@ -80,7 +79,6 @@ void AMEGGamemode::PlaceCardFromHand(int32 InCardId, FVector2D InCoords)
 	PlayedCardsId.Add(InCardId);
 	RemoveCardFromHand(InCardId);
 
-	UpdateScore();
 	DrawCard();
 }
 

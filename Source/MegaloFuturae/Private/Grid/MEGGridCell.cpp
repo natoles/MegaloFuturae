@@ -25,3 +25,14 @@ void AMEGGridCell::UpdateCellDistrict(EMEGDistrict DistrictType)
 	}
 }
 
+EMEGDistrict AMEGGridCell::GetDistrictType() const
+{
+	if (const UMEGCellWidget* CastCellWidget = Cast<UMEGCellWidget>(CellWidget->GetUserWidgetObject()))
+	{
+		return CastCellWidget->DistrictType;
+	}
+
+	check(false);
+	return EMEGDistrict::Parc;
+}
+
