@@ -51,7 +51,7 @@ void AMEGGridManager::PlaceCard(int32 InCardId, FVector2D InCoords)
 		if(!ensure(CurrentGridCell != nullptr))
 			continue;
 
-		CurrentGridCell->UpdateCellDistrict(CellData.Value.DistrictType);
+		CurrentGridCell->UpdateCellWidget(CellData.Value.DistrictType, CellData.Value.Roads);
 	}
 
 	UpdateCardPlacers(InCoords);
@@ -184,6 +184,83 @@ int32 AMEGGridManager::GetDistrictClusterSize(const AMEGGridCell* InGridCell, co
 
 	return Size;
 }
+
+int32 AMEGGridManager::GetRoadCount() const
+{
+	TArray<FVector2D> VisitedCoords;
+	int32 NumRoads = 0;
+
+	for (const AMEGGridCell* GridCell : GridCells)
+	{
+		if (!ensure(GridCell != nullptr))
+			continue;
+
+		if (GridCell->GetRoads().Num() == 0)
+			continue; // No roads
+
+		// Skip it if already visited
+		if (VisitedCoords.Contains(GridCell->Coords))
+			continue;
+
+		NumRoads++;
+
+		// No need to know the length of the road, we just want to mark this entire road as visited
+		VisitSingleRoad(GridCell, VisitedCoords);
+	}
+
+	return NumRoads;
+}
+
+void AMEGGridManager::VisitSingleRoad(const AMEGGridCell* InGridCell, TArray<FVector2D>& VisitedCoords) const
+{
+	if (InGridCell->GetRoads().Num() == 0)
+		return; // No roads
+
+	if (VisitedCoords.Contains(InGridCell->Coords))
+		return;
+
+	VisitedCoords.Add(InGridCell->Coords);
+
+	// Check every road direction to see if it's connected on a neighbor cell
+	for (const EMEGRoad Road : InGridCell->GetRoads())
+	{
+		const FVector2D Offset = GetRoadNeighborOffset(Road);
+		const AMEGGridCell* NeighBorCell = GetCellFromCoords(InGridCell->Coords + Offset);
+		if (NeighBorCell == nullptr) // There are no cell at this coord
+			continue;
+
+		if (!NeighBorCell->GetRoads().Contains(GetOppositeRoad(Road)))
+			continue;
+
+		VisitSingleRoad(NeighBorCell, VisitedCoords);
+	}
+}
+
+const FVector2D AMEGGridManager::GetRoadNeighborOffset(const EMEGRoad& Road) const
+{
+	switch (Road)
+	{
+	case EMEGRoad::Up:
+		return FVector2D(0, -1);
+	case EMEGRoad::Down:
+		return FVector2D(0, 1);
+	case EMEGRoad::Left:
+		return FVector2D(-1, 0);
+	case EMEGRoad::Right:
+		return FVector2D(0, 1);
+	default:
+		return FVector2D(0, 0);
+	}
+}
+
+const EMEGRoad AMEGGridManager::GetOppositeRoad(const EMEGRoad InitialDirection) const
+{
+	int32 IntDirection = (int32)InitialDirection;
+	IntDirection = (IntDirection + 2) % 4;
+	const EMEGRoad OppositeDirection = (EMEGRoad)IntDirection;
+	return OppositeDirection;
+}
+
 
 
 

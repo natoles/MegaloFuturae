@@ -4,9 +4,9 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
+#include "Data/MEGCellData.h"
 #include "MEGGridCell.generated.h"
 
-enum class EMEGDistrict;
 
 UCLASS()
 class MEGALOFUTURAE_API AMEGGridCell : public AActor
@@ -19,9 +19,11 @@ public:
 
 	FVector2D Coords;
 
-	void UpdateCellDistrict(EMEGDistrict DistrictType);
+	void UpdateCellWidget(EMEGDistrict DistrictType, TArray<EMEGRoad> Roads);
 
 	EMEGDistrict GetDistrictType() const;
+
+	const TArray<EMEGRoad> GetRoads() const;
 
 protected:
 

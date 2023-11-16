@@ -42,8 +42,9 @@ void UMEGCardWidget::UpdateCard(int32 InCardId)
 			return;
 
 		const EMEGDistrict CellDistrict = CardData->Cells[KvpCell.Key].DistrictType;
+		const TArray<EMEGRoad>& Roads = CardData->Cells[KvpCell.Key].Roads;
 
-		KvpCell.Value->UpdateCell(CellDistrict);
+		KvpCell.Value->UpdateCell(CellDistrict, Roads);
 	}
 }
 

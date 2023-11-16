@@ -97,6 +97,8 @@ void AMEGGamemode::UpdateScore()
 	{
 		Score += GridManager->GetBiggestDistrictClusterSize(District);
 	}
+
+	Score -= GridManager->GetRoadCount();
 }
 
 int32 AMEGGamemode::GetAvailableCardId() const

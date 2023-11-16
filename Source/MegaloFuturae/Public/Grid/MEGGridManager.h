@@ -4,12 +4,12 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
+#include "Data/MEGCellData.h"
 #include "MEGGridManager.generated.h"
 
 class AMEGGridCell;
 class AMEGCardPlacer;
 enum class EMEGCellPosition;
-enum class EMEGDistrict;
 
 UCLASS()
 class MEGALOFUTURAE_API AMEGGridManager : public AActor
@@ -25,8 +25,15 @@ public:
 	int32 GetBiggestDistrictClusterSize(const EMEGDistrict DistrictType) const;
 	int32 GetDistrictClusterSize(const AMEGGridCell* GridCell, const EMEGDistrict DistrictType, TArray<FVector2D>& VisitedCoords) const;
 
+	int32 GetRoadCount() const;
 
 protected:
+
+	void VisitSingleRoad(const AMEGGridCell* InGridCell, TArray<FVector2D>& VisitedCoords) const;
+
+	const FVector2D GetRoadNeighborOffset(const EMEGRoad& Road) const;
+
+	const EMEGRoad GetOppositeRoad(const EMEGRoad InitialDirection) const;
 
 	FVector2D GetCellPositionOffset(EMEGCellPosition InCellPosition) const;
 	AMEGGridCell* GetCellFromCoords(FVector2D InCoords) const;

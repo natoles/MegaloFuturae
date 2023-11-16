@@ -3,7 +3,6 @@
 
 #include "Grid/MEGGridCell.h"
 #include "UI/MEGCellWidget.h"
-#include "Data/MEGCellData.h"
 
 #include "Components/WidgetComponent.h"
 
@@ -17,11 +16,11 @@ AMEGGridCell::AMEGGridCell()
 	CellWidget->SetupAttachment(RootComponent);
 }
 
-void AMEGGridCell::UpdateCellDistrict(EMEGDistrict DistrictType)
+void AMEGGridCell::UpdateCellWidget(EMEGDistrict DistrictType, TArray<EMEGRoad> Roads)
 {
 	if (UMEGCellWidget* CastCellWidget = Cast<UMEGCellWidget>(CellWidget->GetUserWidgetObject()))
 	{
-		CastCellWidget->UpdateCell(DistrictType);
+		CastCellWidget->UpdateCell(DistrictType, Roads);
 	}
 }
 
@@ -35,4 +34,16 @@ EMEGDistrict AMEGGridCell::GetDistrictType() const
 	check(false);
 	return EMEGDistrict::Parc;
 }
+
+const TArray<EMEGRoad> AMEGGridCell::GetRoads() const
+{
+	if (const UMEGCellWidget* CastCellWidget = Cast<UMEGCellWidget>(CellWidget->GetUserWidgetObject()))
+	{
+		return CastCellWidget->Roads;
+	}
+
+	check(false);
+	return TArray<EMEGRoad>();
+}
+
 
