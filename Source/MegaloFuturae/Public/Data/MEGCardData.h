@@ -34,4 +34,7 @@ public:
 
 	UPROPERTY(EditDefaultsOnly)
 	TMap<EMEGCellPosition, FMEGCellData> Cells;
+
+	UPROPERTY(EditDefaultsOnly)
+	TSubclassOf<class UMEGScoringStrategy> ScoringClass;
 };

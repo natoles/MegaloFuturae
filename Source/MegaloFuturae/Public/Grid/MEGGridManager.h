@@ -27,6 +27,8 @@ public:
 
 	int32 GetRoadCount() const;
 
+	TArray<AMEGGridCell*> GridCells;
+
 protected:
 
 	void VisitSingleRoad(const AMEGGridCell* InGridCell, TArray<FVector2D>& VisitedCoords) const;
@@ -39,8 +41,6 @@ protected:
 	AMEGGridCell* GetCellFromCoords(FVector2D InCoords) const;
 
 	void UpdateCardPlacers(FVector2D InCoords);
-
-	TArray<AMEGGridCell*> GridCells;
 
 	TArray<AMEGCardPlacer*> CardPlacers;
 

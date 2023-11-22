@@ -29,9 +29,6 @@ protected :
 
 	void UpdateRoads(TArray<EMEGRoad> InRoads);
 
-	UFUNCTION(BlueprintImplementableEvent)
-	void TestFunc(TArray<EMEGRoad>& InRoads);
-
 	UPROPERTY(meta = (BindWidget))
 	class UImage* DistrictImage;
 

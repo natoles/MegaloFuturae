@@ -25,6 +25,9 @@ public :
 
 	void PlaceCardFromHand(int32 InCardId, FVector2D InCoords);
 
+	UFUNCTION(BlueprintCallable)
+	int32 GetPointGoal() const;
+
 	/******  Card containers  ******/
 
 	TArray<int32> DrawnCardsId;
@@ -50,12 +53,15 @@ public :
 protected :
 
 	void UpdateScore();
+
 	void DrawCard();
 
 	/* Returns a card id from a card which is available. Returns INDEX_NONE if no card left */
 	int32 GetAvailableCardId() const;
 
 	void RemoveCardFromHand(int32 CardId);
+
+	void SetScoringCards();
 
 	UPROPERTY(EditDefaultsOnly)
 	class UDataTable* DistrictDataTable;

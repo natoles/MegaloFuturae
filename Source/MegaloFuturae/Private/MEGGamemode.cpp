@@ -5,8 +5,10 @@
 #include "Blueprint/UserWidget.h"
 #include "Data/MEGDistrictDataRow.h"
 #include "Grid/MEGGridManager.h"
+#include "Score/MEGScoringStrategy.h"
 
 #define MAX_CARDS_IN_HANDS 3
+#define NUM_SCORING_CARDS 3
 
 void AMEGGamemode::BeginPlay()
 {
@@ -17,6 +19,8 @@ void AMEGGamemode::BeginPlay()
 		return;
 
 	HUDWidget->AddToViewport();
+
+	SetScoringCards();
 
 	for (int32 Index = 0; Index < MAX_CARDS_IN_HANDS; Index++)
 	{
@@ -90,6 +94,30 @@ void AMEGGamemode::RemoveCardFromHand(int32 CardId)
 	OnCardHandUpdatedDelegate.ExecuteIfBound();
 }
 
+void AMEGGamemode::SetScoringCards()
+{
+	TArray<FMEGCardData> AvailableScoringCards = Cards.FilterByPredicate([this](const FMEGCardData& InCardData)
+		{
+			const bool bIsAvailable = !(DrawnCardsId.Contains(InCardData.CardId)
+				|| PlayedCardsId.Contains(InCardData.CardId)
+				|| ScoringCardsId.Contains(InCardData.CardId));
+
+			const bool bHasScoringClass = (InCardData.ScoringClass != nullptr);
+
+			return bIsAvailable && bHasScoringClass;
+		});
+
+	for (int32 Index = 0; Index < NUM_SCORING_CARDS; Index++)
+	{
+		if(!ensure(AvailableScoringCards.Num() != 0))
+			break;
+
+		const int32 CardIndex = rand() % AvailableScoringCards.Num();
+		ScoringCardsId.Add(AvailableScoringCards[CardIndex].CardId);
+		AvailableScoringCards.RemoveAt(CardIndex);
+	}
+}
+
 void AMEGGamemode::UpdateScore()
 {
 	Score = 0;
@@ -99,6 +127,38 @@ void AMEGGamemode::UpdateScore()
 	}
 
 	Score -= GridManager->GetRoadCount();
+
+	for (int32 Index = 0; Index < ScoringCardsId.Num(); Index++)
+	{
+		const FMEGCardData* CardData = GetCardDataFromId(ScoringCardsId[Index]);
+		if (!ensure(CardData != nullptr && CardData->ScoringClass != nullptr))
+			continue;
+
+		const UMEGScoringStrategy* ScoringStrategyCDO = Cast<UMEGScoringStrategy>(CardData->ScoringClass->GetDefaultObject());
+		if (!ensure(ScoringStrategyCDO != nullptr))
+			continue;
+
+		Score += ScoringStrategyCDO->GetScore(GridManager->GridCells);
+	}
+}
+
+int32 AMEGGamemode::GetPointGoal() const
+{
+	int32 PointGoal = 0;
+	for (const int32 CardId : ScoringCardsId)
+	{
+		const FMEGCardData* CardData = GetCardDataFromId(CardId);
+		if(!ensure(CardData != nullptr && CardData->ScoringClass != nullptr))
+			continue;
+
+		const UMEGScoringStrategy* ScoringStrategyCDO = Cast<UMEGScoringStrategy>(CardData->ScoringClass->GetDefaultObject());
+		if(!ensure(ScoringStrategyCDO != nullptr))
+			continue;
+
+		PointGoal += ScoringStrategyCDO->ScoringGoal;
+	}
+
+	return PointGoal;
 }
 
 int32 AMEGGamemode::GetAvailableCardId() const
